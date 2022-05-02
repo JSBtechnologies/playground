@@ -1,15 +1,18 @@
 var form_keys = Object.keys(app.forms_old)
 var old_forms = app.forms_old;
-var new_old_forms = [];
-
+var sections = Object.keys(app.forms_old).reduce(function(m, k) {
+                m[k] = {}
+                return m;
+              }, {});
 
 form_keys.forEach(function(type) {
+  var type = type;
   var section = old_forms[type];
+	var new_old_forms = {};
 
   section.forEach(function(item) {
-
     var result = [item].reduce(function(map, obj) {
-      if (typeof obj.languages == 'undefined') {
+      if (typeof [obj][0].languages == 'undefined') {
         var sub_key = Object.keys(obj).filter(x => x != 'name' && x != 'url');
         sub_key.forEach(function(sub) {
           obj = obj[sub]
@@ -31,12 +34,13 @@ form_keys.forEach(function(type) {
 
       return map;
     }, {});
-    console.log(result)
-    new_old_forms.push(result)
+      Object.assign(new_old_forms,
+        result
+      )
   })
-
+  Object.assign(sections[type],new_old_forms)
 })
 
 
 
-console.log(new_old_forms)
+console.log(sections)
